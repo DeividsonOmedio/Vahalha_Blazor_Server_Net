@@ -1,0 +1,25 @@
+﻿@page "/album/create"
+
+@inject IAlbunsServices albunservice
+@inject NavigationManager navigation
+
+<PageTitle>Adicionar Album</PageTitle>
+
+<h2>Adicionar Album</h2>
+
+<Valhahalha_Blazor_ServerSide.Pages.Components.CreateAlbum Albun="@albun"
+                OnValidSubmit="CriarAlbun"
+                ButtonTextSubmit="Salvar"
+                ButtonTextCancelar="Cancelar">
+            </Valhahalha_Blazor_ServerSide.Pages.Components.CreateAlbum>
+
+
+
+@code{
+    private Albun albun = new Albun();
+
+    async Task CriarAlbun(){
+        await albunservice.AdicinarAlbum(albun);
+        navigation.NavigateTo("albuns");
+    }
+}

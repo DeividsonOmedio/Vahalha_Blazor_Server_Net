@@ -1,0 +1,75 @@
+﻿@using Valhahalha_Blazor_Server.Service.interfaces;
+@inject IAlbunsServices albunService
+
+
+
+
+<!-- Vertically centered modal -->
+@if(ExibirDetalhes)
+{
+    <div class="modal "   tabindex="-1" role="dialog" aria-hidden="true" style="display: block">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">@Titulo</h5>
+        <button type="button" onclick="Ocultar" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+    <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif">
+                <div >
+                   @ChildContent
+                   </div> 
+                
+                
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="Ocultar" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section>
+
+
+<button @onclick="voltar" type="button">Voltar</button>
+        <button @onclick="comentar" type="button" @onclick="OnClose">Comentar</button>
+    </section>
+
+}
+
+@code {
+    [Parameter] public bool ExibirDetalhes { get; set; } = false;
+    [Parameter] public string Titulo { get; set; } = "Albuns";
+    [Parameter] public string CoverUrl { get; set; }
+    [Parameter] public string Artista { get; set; } 
+    [Parameter] public int Ano { get; set; } 
+    [Parameter] public int Likes { get; set; }
+    [Parameter] public Albun Album { get; set; }
+    [Parameter] public RenderFragment ChildContent{ get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback comentar { get; set; }
+    [Parameter] public EventCallback voltar { get; set; }
+
+
+    public void Exibir() {
+       
+            ExibirDetalhes = true;
+        
+        
+    }
+    public void Ocultar() => ExibirDetalhes = false;
+
+
+   
+
+    public async void BuscarPorId()
+    {
+
+        
+
+
+
+    }
+}

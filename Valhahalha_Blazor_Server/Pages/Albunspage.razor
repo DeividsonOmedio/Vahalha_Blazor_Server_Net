@@ -1,0 +1,106 @@
+﻿@page "/albuns"
+@using Valhahalha_Blazor_Server.Pages.Shared;
+@using Valhahalha_Blazor_Server.Service.interfaces;
+@inject IAlbunsServices albunService
+@inject NavigationManager navigation
+
+<style>
+    body{
+        
+    }
+    table{
+        background-color: pink;
+        color: white;
+        font-size: 1.3rem;
+        font-weight:bolder;
+    }
+  
+</style>
+
+<PageTitle>Albuns</PageTitle>
+@if(ExibirAlbuns){
+
+  
+    
+<h1>Albúns</h1>
+@if(albuns == null)
+{
+    <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif">
+}
+else
+{
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Albúm</th>
+            <th scope="col">Autor</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var album in albuns)
+        {
+        <tr>
+            <th scope="row"><img src="@album.CoverUrl" width="75" /></th>
+            <td>@album.Titulo</td>
+            <td>@album.Artista</td>
+                        <td><button type="button" class="btn btn-outline-secondary"  @onclick="@(()=> Detalhar(album))">Ver Detalhes</button></td>
+        </tr>
+        }
+    </tbody>
+</table>
+}
+}
+
+<Detalhes @ref="exibir" voltar="VoltarConfirma" comentar="ComentarConfirma">
+    <div>Certeza?</div>
+</Detalhes>
+
+
+
+
+@code {
+    public IEnumerable<Albun> albuns { get; set; }
+    Detalhes exibir { get; set; }
+    public int IdAlbum { get; set; }
+    [Parameter] public string Titulo { get; set; } 
+    [Parameter] public string CoverUrl { get; set; }
+    [Parameter] public string Artista { get; set; }
+    [Parameter] public int Ano { get; set; }
+    [Parameter] public int Likes { get; set; }
+    [Parameter] public bool ExibirAlbuns { get; set; } = true;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetAlbuns();
+    }
+    protected async Task GetAlbuns()
+    {
+        albuns = await albunService.ListarAlbus();
+    }
+
+
+    void Detalhar(Albun al)
+    {
+        Titulo = al.Titulo;
+        Artista = al.Artista;
+        CoverUrl = al.CoverUrl;
+        Ano = al.Ano;
+        exibir.Exibir();
+        
+
+    }
+    void VoltarConfirma()
+    {
+        exibir.Ocultar();
+    }
+    void ComentarConfirma()
+    {
+
+    }
+
+
+}

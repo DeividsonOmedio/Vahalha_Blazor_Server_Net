@@ -1,0 +1,98 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Valhalla Blazor</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+
+    <nav class="flex-column">
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+                
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="albuns">
+                        <svg style="scale:1.5; margin-right: 15px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-badge-4k" viewBox="0 0 16 16">
+                            <path d="M4.807 5.001C4.021 6.298 3.203 7.6 2.5 8.917v.971h2.905V11h1.112V9.888h.733V8.93h-.733V5.001h-1.71zm-1.23 3.93v-.032a46.781 46.781 0 0 1 1.766-3.001h.062V8.93H3.577zm9.831-3.93h-1.306L9.835 7.687h-.057V5H8.59v6h1.187V9.075l.615-.699L12.072 11H13.5l-2.232-3.415 2.14-2.584z" />
+                            <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z" />
+                        </svg> Albuns
+                    </NavLink>
+                </div>
+                
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/Identity/Account/Login">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+               
+            </NotAuthorized>
+            <Authorized>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="albuns">
+                        <svg style="scale:1.5; margin-right: 15px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-badge-4k" viewBox="0 0 16 16">
+                            <path d="M4.807 5.001C4.021 6.298 3.203 7.6 2.5 8.917v.971h2.905V11h1.112V9.888h.733V8.93h-.733V5.001h-1.71zm-1.23 3.93v-.032a46.781 46.781 0 0 1 1.766-3.001h.062V8.93H3.577zm9.831-3.93h-1.306L9.835 7.687h-.057V5H8.59v6h1.187V9.075l.615-.699L12.072 11H13.5l-2.232-3.415 2.14-2.584z" />
+                            <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z" />
+                        </svg> Albuns
+                    </NavLink>
+                </div>
+                @if (!@context.User.IsInRole("Dono"))
+                {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Identity/Account/Logout">
+                        <span class="oi oi-list-rich" aria-hidden="true" style="margin-left: 3%"></span> Logout
+                          
+                    </NavLink>
+                    <span style="margin-top: 3%; margin-left: 25%;">(@context.User.Identity.Name)</span>
+                </div>
+                }
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Dono">
+            
+            <Authorized>
+               
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="album/create">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Adicionar Album
+                    </NavLink>
+                    
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Identity/Account/Logout">
+                        <span class="oi oi-list-rich" aria-hidden="true" style="margin-left: 3%"></span> Logout
+
+                    </NavLink>
+                    <span style="margin-top: 3%; margin-left: 25%;">(@context.User.Identity.Name)</span>
+                </div>
+                
+            </Authorized>
+             
+        </AuthorizeView>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

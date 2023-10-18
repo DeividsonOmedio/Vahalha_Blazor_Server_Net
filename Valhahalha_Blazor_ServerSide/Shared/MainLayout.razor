@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+
+
+<style>
+    body {
+        background-image: linear-gradient(to bottom, transparent -20%, #000 90%), url(https://i.pinimg.com/originals/3e/72/ed/3e72edf10b0fb47799ec363788b80f40.jpg);
+        background-color: #00000080;
+        
+    }
+    article{
+       
+        font-size: 2.25rem;
+        font-family: cursive;
+    
+    }
+</style>
+
+<PageTitle>Vahalha</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+        
+    </div>
+
+    <main>
+        
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

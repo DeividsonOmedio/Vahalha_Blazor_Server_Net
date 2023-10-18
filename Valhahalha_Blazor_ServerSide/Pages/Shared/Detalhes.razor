@@ -1,0 +1,77 @@
+﻿@using Valhahalha_Blazor_ServerSide.Services.Interfaces;
+@using Valhahalha_Blazor_ServerSide.Services;
+@inject IAlbunsServices albunService
+
+
+
+
+<!-- Vertically centered modal -->
+@if(ExibirDetalhes)
+{
+    <div class="modal fade text-capitalize text-justify justify-content-center text-black-50" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark" id="exampleModalLabel">>&nbsp;@Titulo</h5>
+                    <button type="button" class="btn-close" @onclick="@(()=> Voltar())" aria-label="Close" data-bs-dismiss="modal" style="zoom: 0.5;"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center ">
+                   
+                    <div class="d-flex justify-content-center text-center ">
+                  @ChildContent
+                   </div> 
+                
+              
+                </div>
+                <div class="modal-footer">
+                    <button type="button" @onclick="Voltar" aria-label="Close" data-bs-dismiss="modal" style="zoom: 0.5;">Voltar</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+}
+
+@code {
+    [Parameter] public bool ExibirDetalhes { get; set; } = true;
+    [Parameter] public string Titulo { get; set; } = "Albuns";
+    [Parameter] public string CoverUrl { get; set; }
+    [Parameter] public string Artista { get; set; } 
+    [Parameter] public string User { get; set; }
+    [Parameter] public int Ano { get; set; } 
+    [Parameter] public int Likes { get; set; }
+    [Parameter] public Albun Album { get; set; }
+    [Parameter] public RenderFragment ChildContent{ get; set; }
+    [Parameter] public EventCallback comentar { get; set; }
+    [Parameter] public EventCallback voltar { get; set; }
+    [Parameter] public Comentari comentari { get; set; } = new Comentari();
+
+    Albunspage albumpage { get; set; }
+    [Parameter]
+    public string ButtonTextSubmit { get; set; } = "Salvar";
+
+    [Parameter]
+    public string ButtonTextCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+
+    public void Exibir() {
+
+        ExibirDetalhes = true;
+
+
+    }
+    public void Voltar() => ExibirDetalhes = false;
+
+
+    async void NovaCurtida()
+    {
+        await albumpage.NovaCurtida();
+    }
+
+   // public async void Comentar() => await ComentarioServices.AdicionarComentario(comentari);
+}

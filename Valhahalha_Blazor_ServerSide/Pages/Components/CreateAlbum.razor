@@ -1,0 +1,110 @@
+﻿
+
+
+<EditForm Model="@Albun" OnValidSubmit="@OnValidSubmit" class="bg-opacity-50" style="font-size: 1rem;">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h3 form="album">Novo Albúm</h3>
+    <div class="form-group row">
+        
+
+        <div class="col-sm-4">
+            <label form="Album.Titulo">Titulo</label>
+            <InputText @bind-Value="Albun.Titulo" class="form-control" />
+            <ValidationMessage For="@(() => Albun.Titulo)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+
+        <div class="col-sm-4">
+            <label form="album">Artista</label>
+            <InputText @bind-Value="Albun.Artista" class="form-control" />
+            <ValidationMessage For="@(() => Albun.Artista)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-4">
+            <label form="album">Ano</label>
+            <InputNumber @bind-Value="Albun.Ano" class="form-control" />
+            <ValidationMessage For="@(() => Albun.Ano)" />
+        </div>
+    </div>
+ 
+    <div class="form-group row"> 
+            <label form="album">Capa do Album</label>
+        <BlazorInputFile.InputFile OnChange="HandleSelection"/>    
+       </div>
+
+   
+    <div class="form-group row">
+        <div class="col-sm-4">
+             <label form="album">CoverUrl</label>
+            <InputText hidden @bind-Value="Albun.CoverUrl" class="form-control"/>
+            <ValidationMessage For="@(() => Albun.CoverUrl)" /> 
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <img src="@imag" style="max-width: 700px">
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        @ButtonTextSubmit
+    </button>
+    <button type="submit" class="btn btn-success"
+    @onclick="@(() => navigation.NavigateTo("Albuns"))">
+        @ButtonTextCancelar
+    </button>
+
+</EditForm>
+
+
+@code {
+
+
+    [Inject]
+    private IAlbunsServices albunservice { get; set; }
+    [Inject]
+    private NavigationManager navigation { get; set; }
+
+    [Parameter]
+    public Albun Albun { get; set; }
+
+    [Parameter]
+    public string ButtonTextSubmit { get; set; } = "Salvar";
+
+    [Parameter]
+    public string ButtonTextCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    public byte[] ImageUploaded { get; set; }
+    public string imag { get; set; }
+
+
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var ms = new MemoryStream();
+            await file.Data.CopyToAsync(ms);
+            ImageUploaded = ms.ToArray();
+            var base64 = Convert.ToBase64String(ImageUploaded);
+            var finalStr = string.Format("data:image/jpg;base64,{0}", base64);
+            imag = finalStr;
+            Albun.CoverUrl = finalStr;
+            ImageUploaded = null;
+        }
+        else
+        {
+            imag = "images/Led_Zeppelin.jpg";
+        }
+
+    }
+
+}

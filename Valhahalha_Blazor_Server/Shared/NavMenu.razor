@@ -1,0 +1,64 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Valhahalha_Blazor_Server</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+
+    
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    
+    <nav class="flex-column">
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Identity/Account/Login">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+
+            </NotAuthorized>
+            <Authorized>
+               
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="albuns">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Albuns
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="album/create">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Adicionar Album
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Identity/Account/Logout">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> 
+                        Logout <br /> <span>(@context.User.Identity.Name)</span>
+                    </NavLink>
+                </div>
+            </Authorized>
+            
+    </AuthorizeView>
+    </nav>
+</div>
+    
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

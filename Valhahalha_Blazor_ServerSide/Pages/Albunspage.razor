@@ -1,0 +1,306 @@
+﻿@page "/albuns"
+@using Valhahalha_Blazor_ServerSide.Pages.Shared;
+@using Valhahalha_Blazor_ServerSide.Services.Interfaces;
+@using Valhahalha_Blazor_ServerSide.Services;
+@inject IAlbunsServices albunService
+@inject IComentarioServices comentarioService
+@inject NavigationManager navigation
+
+
+<style>
+    body {
+    }
+
+    table {
+        background-color: pink;
+        color: white;
+        font-size: 1.3rem;
+        font-weight: bolder;
+    }
+</style>
+
+<PageTitle>Albuns</PageTitle>
+
+
+
+  
+    
+<h1>Albúns</h1>
+@if(albuns == null)
+{
+    <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif">
+}
+else
+{
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Albúm</th>
+            <th scope="col">Autor</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var album in albuns)
+        {
+        <tr>
+            <th scope="row">
+                        @if(@album.CoverUrl.Contains("image/") || @album.CoverUrl.Contains("www."))
+                        {
+                        <img src="@album.CoverUrl" width="300" />
+                        }
+                        else
+                        {
+                            <img src="images/@album.CoverUrl" width="300" />
+
+                        }
+                            
+                        
+            </th>
+            <td class="d-flex justify-content-center align-content-center text-center align-items-center">@album.Titulo</td>
+            <td>@album.Artista</td>
+                    <td><button style=" background-image: linear-gradient(50deg, rgb(5, 39, 103) 0%, #3a0647 30%);" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @onclick="@(()=> Detalhar(album.Titulo, album.Artista, album.CoverUrl, album.Ano, album.Likes, album.Id))">Ver Detalhes</button></td>
+        </tr>
+        }
+    </tbody>
+</table>
+}
+
+
+
+
+
+<Detalhes @ref="exibir" voltar="VoltarConfirma" comentar="ComentarConfirma" Titulo="@Artista" OnValidSubmit="Comentar" >
+    <div style="font-size: 1rem;">
+        <h2>@Titulo</h2>
+        <hr />
+        
+        @if (@CoverUrl != "")
+        {
+            @if (@CoverUrl.Contains("image/") || @CoverUrl.Contains("www."))
+            {
+                <img src="@CoverUrl" width="300" />
+            }
+            else
+            {
+                <img src="images/@CoverUrl" width="300" />
+
+            }
+        }
+
+        <h6>@Ano</h6>
+        <AuthorizeView>
+            
+            <NotAuthorized>
+                <div><span class="text-muted">curtidas: </span> @Likes</div>
+        <div>
+            <label>Comentario</label>
+            @if (ListaComentarios == null)
+            {
+                <p> deu ruim</p>
+            }
+            else
+            {
+                @foreach (var comentari in ListaComentarios)
+                {
+                            <div class="text-muted">Usuario comentou: <span class="text-dark">@comentari.Comentario</span></div>
+                    
+                }
+
+            }
+            @if (ComentarioPronto != null)
+            {
+                <p> @ComentarioPronto </p>
+            }
+            
+                <input type="text" placeholder="Seu comentario" @bind=@Comentario/>
+        </div>
+
+                <h6>Somente Usuários Logados podem curtir e comentar</h6>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Identity/Account/Login">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+            <Authorized >
+                <button type="button" onclick="@(()=> NovaCurtida())">  Curtir? @Likes</button>
+                    
+
+                    <hr>
+                    @if (ListaComentarios == null)
+                    {
+                        <p> deu ruim</p>
+                    }
+                    else
+                    {
+                        @foreach (var comentari in ListaComentarios)
+                        {
+                            @if(@comentari.User != null){
+                                <div class="text-muted">@comentari.User: <span class="text-dark">  @comentari.Comentario</span></div>
+                            }
+                            else
+                            {
+                                <div class="text-muted">User : <span class="text-dark">  @comentari.Comentario</span></div>
+
+                            }
+
+                        }
+
+                    }
+                    @if (ComentarioPronto != null)
+                    {
+                        <p> @ComentarioPronto </p>
+                    }
+                    <div style="display: flex; justify-content: center; margin-top: 3%;">
+                        <input type="text" placeholder="Seu comentario" @bind=@Comentario />
+                        <div>
+                            <button style="margin-left: 2%;" type="submit" class="btn btn-success" onclick="@(()=> NovoComentario())">
+                                Comentar
+                            </button>
+                        </div>
+                    </div>
+                    @if(@context.User.Identity.Name != null)
+                    {
+                    User = @context.User.Identity.Name.ToString();
+
+                     }
+               
+                    
+             </Authorized>
+             
+
+        </AuthorizeView>
+       
+        
+
+        </div>
+    
+</Detalhes>
+
+<script >
+    var user = document.getElementById("myDiv").innerHTML
+    var input = document.getElementById("input").innerHTML
+    input.valueOf = user
+</script>
+
+@code {
+    public IEnumerable<Albun> albuns { get; set; }
+
+    private const int V = 0;
+    private string divContent;
+
+    public IEnumerable<Comentari> ListaComentarios { get; set; }
+    Detalhes exibir { get; set; }
+    [Parameter]
+    public Comentari comentari { get; set; } = new Comentari();
+    [Parameter]
+    public string ButtonTextSubmit { get; set; } = "Salvar";
+    [Parameter] public int Id { get; set; } = 0;
+    [Parameter] public string Titulo { get; set; } = "";
+    [Parameter] public string CoverUrl { get; set; } = "";
+    [Parameter] public string Artista { get; set; } = "";
+    [Parameter] public int Ano { get; set; } = 0;
+    [Parameter] public int Likes { get; set; } = 0;
+    [Parameter] public string ComentarioPronto { get; set; }
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+    public int IdAlbum { get; set; }
+    protected string Comentario { get; set; }
+    protected string User { get; set; } = "Deividson";
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetAlbuns();
+       
+        // exibir.Voltar();
+
+    }
+    protected async Task GetAlbuns()
+    {
+        albuns = await albunService.ListarAlbus();
+    }
+
+   
+
+
+
+    protected async Task Detalhar(string titulo, string artista, string url, int ano, int likes, int id)
+    {
+        ListaComentarios = null;
+
+        Comentario = "";
+        Titulo = titulo;
+        Artista = artista;
+        CoverUrl = url;
+        Ano = ano;
+        Id = id;
+        Curtidas(likes);
+        exibir.Exibir();
+        await listarComentarios();
+
+    }
+    void Curtidas(int likes)
+    {
+        Likes = likes;
+    }
+
+    public async Task Comentar()
+    {
+        Comentari novoComentario = new Comentari();
+        novoComentario.Album = Id;
+        novoComentario.Comentario = Comentario;
+        novoComentario.User = User;
+
+        var response = await comentarioService.AdicionarComentario(Id,comentari);
+        await listarComentarios();
+        
+        //navigation.NavigateTo("albuns");
+    }
+
+    public async Task NovoComentario()
+    {
+        Comentari novoComentario = new Comentari();
+        novoComentario.Album = Id;
+        novoComentario.Comentario = Comentario;
+        novoComentario.User = User;
+
+        var response = await comentarioService.AdicionarComentario(Id, novoComentario);
+        await listarComentarios();
+        Comentario = "";
+    }
+
+    public async Task NovaCurtida()
+    {
+        Albun novaCurtida = new Albun();
+        novaCurtida.Id = Id;
+        var result = await albunService.DarLike(Id);
+        //navigation.NavigateTo("albuns");
+        var alb = await albunService.GetById(Id);
+        await Detalhar(alb.Titulo, alb.Artista, alb.CoverUrl, alb.Ano, alb.Likes, alb.Id);
+               
+        await InvokeAsync(StateHasChanged);
+    }
+    protected async Task listarComentarios()
+    {
+        var result = await comentarioService.GetById(Id);
+        ListaComentarios = result;
+        Comentario = "";
+    }
+    void Voltar()
+    {
+        exibir.Voltar();
+        navigation.NavigateTo("albuns");
+    }
+    void VoltarConfirma()
+    {
+        exibir.Voltar();
+        navigation.NavigateTo("albuns");
+    }
+    async void ComentarConfirma()
+    {
+        await Comentar();
+    }
+}

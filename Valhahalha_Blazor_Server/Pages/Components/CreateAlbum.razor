@@ -1,0 +1,78 @@
+﻿
+
+<EditForm Model="@Albun" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group row">
+        <label form="album">Albúm</label>
+
+        <div class="col-sm-4">
+            <label form="Album.Titulo">Titulo</label>
+            <InputText @bind-Value="Albun.Titulo" class="form-control" />
+            <ValidationMessage For="@(() => Albun.Titulo)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label form="album">Albúm</label>
+
+        <div class="col-sm-4">
+            <label form="album">Artista</label>
+
+            <InputText @bind-Value="Albun.Artista" class="form-control" />
+            <ValidationMessage For="@(() => Albun.Artista)" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label form="album">Albúm</label>
+
+        <div class="col-sm-4">
+            <label form="album">Ano</label>
+            <InputNumber @bind-Value="Albun.Ano" class="form-control" />
+            <ValidationMessage For="@(() => Albun.Ano)" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label form="album">Albúm</label>
+        <div class="col-sm-4">
+            <label form="album">CoverUrl</label>
+            <InputText @bind-Value="Albun.CoverUrl" class="form-control" />
+            <ValidationMessage For="@(() => Albun.CoverUrl)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        @ButtonTextSubmit
+    </button>
+    <button type="submit" class="btn btn-success"
+    @onclick="@(() => navigation.NavigateTo("Albuns"))">
+        @ButtonTextCancelar
+    </button>
+
+</EditForm>
+
+@code {
+
+
+    [Inject]
+    private IAlbunsServices albunservice { get; set; }
+    [Inject]
+    private NavigationManager navigation { get; set; }
+
+    [Parameter]
+    public Albun Albun { get; set; }
+
+    [Parameter]
+    public string ButtonTextSubmit { get; set; } = "Salvar";
+
+    [Parameter]
+    public string ButtonTextCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+
+
+}
